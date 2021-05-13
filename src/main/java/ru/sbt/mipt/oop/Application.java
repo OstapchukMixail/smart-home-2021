@@ -13,7 +13,8 @@ public class Application {
         SmartHome smartHome = (new SmartHomeReaderImplementation("smart-home-1.js")).read();
         List<EventProcessor> eventProcessors = Arrays.asList(
                 new LightEventProcessor(smartHome),
-                new DoorEventProcessor(smartHome)
+                new DoorEventProcessor(smartHome),
+                new HallDoorEventProcessor(smartHome)
         );
         EventCreation eventLoop = new EventCreation(
                 new RandomEventProcessor(eventProcessors),
