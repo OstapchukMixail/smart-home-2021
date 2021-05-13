@@ -4,6 +4,8 @@ import ru.sbt.mipt.oop.SmartHome;
 import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.EventType;
 import ru.sbt.mipt.oop.events.SensorEvent;
+import ru.sbt.mipt.oop.action.Action;
+import ru.sbt.mipt.oop.action.DoorAction;
 import ru.sbt.mipt.oop.Door;
 
 public class DoorEventProcessor implements EventProcessor {
@@ -19,14 +21,8 @@ public class DoorEventProcessor implements EventProcessor {
 
         SensorEvent sensorEvent = (SensorEvent) event;
 
-        smartHome.execute(component -> {
-            if (component instanceof Door) {
-                Door door = (Door) component;
-                if (door.getId().equals(sensorEvent.getObjectId())) {
-                    updateState(door, getState(event));
-                }
-            }
-        });
+        Action changeDoorState  = new DoorAction(sensorEvent.getObjectId(), getState(event));
+        smartHome.execute(changeDoorState);
     }
 
     private boolean isEventValid(EventType type) {
@@ -38,8 +34,4 @@ public class DoorEventProcessor implements EventProcessor {
         return isOpen;
     }
 
-    private void updateState(Door door, boolean newState) {
-        door.setOpen(newState);
-        System.out.println("Door " + door.getId() + " was " + (newState ? "opened." : "closed."));
-    }
 }

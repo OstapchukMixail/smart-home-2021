@@ -1,7 +1,7 @@
 package ru.sbt.mipt.oop.signaling;
 
-import ru.sbt.mipt.oop.Action;
-import ru.sbt.mipt.oop.Actionable;
+import ru.sbt.mipt.oop.action.Action;
+import ru.sbt.mipt.oop.action.Actionable;
 
 public class Alarm implements Actionable {
     private AlarmState state;

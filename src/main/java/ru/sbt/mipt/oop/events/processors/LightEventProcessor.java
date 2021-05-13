@@ -5,6 +5,8 @@ import ru.sbt.mipt.oop.events.SensorEvent;
 import ru.sbt.mipt.oop.Light;
 import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.EventType;
+import ru.sbt.mipt.oop.action.Action;
+import ru.sbt.mipt.oop.action.OneLightAction;
 
 public class LightEventProcessor implements EventProcessor{
     private final SmartHome smartHome;
@@ -18,14 +20,9 @@ public class LightEventProcessor implements EventProcessor{
         if (!isEventValid(event.getType())) return;
 
         SensorEvent sensorEvent = (SensorEvent) event;
-        smartHome.execute(component -> {
-            if (component instanceof Light) {
-                Light light = (Light) component;
-                if (light.getId().equals(sensorEvent.getObjectId())) {
-                    updateState(light, getState(event));
-                }
-            }
-        });
+
+        Action setLight = new OneLightAction(sensorEvent.getObjectId(), getState(event));
+        smartHome.execute(setLight);
     }
 
     private boolean isEventValid(EventType type) {
@@ -37,8 +34,4 @@ public class LightEventProcessor implements EventProcessor{
         return isOn;
     }
 
-    private void updateState(Light light, boolean newState) {
-        light.setOn(newState);
-        System.out.println("Light " + light.getId() + " was turned " + (newState ? "on." : "off."));
-    }
 }

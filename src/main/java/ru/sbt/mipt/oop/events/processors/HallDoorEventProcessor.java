@@ -10,6 +10,9 @@ import ru.sbt.mipt.oop.Room;
 import ru.sbt.mipt.oop.SmartHome;
 import ru.sbt.mipt.oop.Door;
 import ru.sbt.mipt.oop.events.EventType;
+import ru.sbt.mipt.oop.action.Action;
+import ru.sbt.mipt.oop.action.AllLightAction;
+import ru.sbt.mipt.oop.action.CloseHallDoorAction;
 
 
 public class HallDoorEventProcessor implements EventProcessor{
@@ -26,49 +29,12 @@ public class HallDoorEventProcessor implements EventProcessor{
 
         SensorEvent sensorEvent = (SensorEvent) event;
 
-        smartHome.execute((homeComponent -> {
-            if (homeComponent instanceof Room) {
-                Room room = (Room) homeComponent;
-                if (!room.getName().equals("hall")) {
-                    return;
-                }
-
-                ifHallDoor(sensorEvent.getObjectId());
-            }
-        }));
+        Action closeHallDoor = new CloseHallDoorAction(smartHome, sensorEvent.getObjectId());
+        smartHome.execute(closeHallDoor);
     }
 
     private boolean isEventValid(Event event) {
         return (event.getType().equals(EventType.DOOR_CLOSED));
     }
 
-
-    private void ifHallDoor(String id) {
-        smartHome.execute((component -> {
-            if (component instanceof Door) {
-                Door door = (Door) component;
-                if (door.getId().equals(id)) {
-                    turnOffAllLight();
-                    smartHome.execute((componentL -> {
-                        if (componentL instanceof Light) {
-                            Light light = (Light) componentL;
-                            SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, light.getId());
-                            CommandSender sender = new CommandSenderImplementation();
-                            sender.sendCommand(command);
-                        }
-                    }));
-                }
-            }
-        }));
-    }
-
-    private void turnOffAllLight() {
-        smartHome.execute((innComponent -> {
-            if (innComponent instanceof Light) {
-                Light light = (Light) innComponent;
-                light.setOn(false);
-                System.out.println(light.getId() + " was turned off.");
-            }
-        }));
-    }
 }

@@ -2,9 +2,12 @@ package ru.sbt.mipt.oop;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import ru.sbt.mipt.oop.action.Action;
+import ru.sbt.mipt.oop.action.Actionable;
 import ru.sbt.mipt.oop.signaling.Alarm;
 
-public class SmartHome implements Actionable{
+public class SmartHome implements Actionable {
     Collection<Room> rooms;
     private Alarm alarm = new Alarm("password");
 
