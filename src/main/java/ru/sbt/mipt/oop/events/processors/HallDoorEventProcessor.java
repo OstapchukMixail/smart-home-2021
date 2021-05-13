@@ -2,14 +2,14 @@ package ru.sbt.mipt.oop.events.processors;
 import ru.sbt.mipt.oop.Light;
 import ru.sbt.mipt.oop.commands.CommandSender;
 import ru.sbt.mipt.oop.commands.CommandSenderImplementation;
+import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.commands.CommandType;
 import ru.sbt.mipt.oop.commands.SensorCommand;
 import ru.sbt.mipt.oop.events.SensorEvent;
 import ru.sbt.mipt.oop.Room;
 import ru.sbt.mipt.oop.SmartHome;
 import ru.sbt.mipt.oop.Door;
-import ru.sbt.mipt.oop.events.SensorEventType;
-import ru.sbt.mipt.oop.events.SensorEventType.*;
+import ru.sbt.mipt.oop.events.EventType;
 
 
 public class HallDoorEventProcessor implements EventProcessor{
@@ -21,8 +21,10 @@ public class HallDoorEventProcessor implements EventProcessor{
 
 
     @Override
-    public void processEvent(SensorEvent event) {
+    public void processEvent(Event event) {
         if (!isEventValid(event)) return;
+
+        SensorEvent sensorEvent = (SensorEvent) event;
 
         smartHome.execute((homeComponent -> {
             if (homeComponent instanceof Room) {
@@ -31,13 +33,13 @@ public class HallDoorEventProcessor implements EventProcessor{
                     return;
                 }
 
-                ifHallDoor(event.getObjectId());
+                ifHallDoor(sensorEvent.getObjectId());
             }
         }));
     }
 
-    private boolean isEventValid(SensorEvent event) {
-        return (event.getType().equals(SensorEventType.DOOR_CLOSED));
+    private boolean isEventValid(Event event) {
+        return (event.getType().equals(EventType.DOOR_CLOSED));
     }
 
 

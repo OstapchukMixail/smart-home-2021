@@ -5,7 +5,6 @@ import java.util.List;
 import ru.sbt.mipt.oop.homereader.SmartHomeReaderImplementation;
 import ru.sbt.mipt.oop.events.*;
 import ru.sbt.mipt.oop.events.processors.*;
-import static ru.sbt.mipt.oop.events.SensorEventType.*;
 
 public class Application {
 
@@ -14,10 +13,13 @@ public class Application {
         List<EventProcessor> eventProcessors = Arrays.asList(
                 new LightEventProcessor(smartHome),
                 new DoorEventProcessor(smartHome),
-                new HallDoorEventProcessor(smartHome)
+                new HallDoorEventProcessor(smartHome),
+                new AlarmEventProcessor(smartHome.getAlarm())
         );
         EventCreation eventLoop = new EventCreation(
-                new RandomEventProcessor(eventProcessors),
+                new EventProcessorDecorator(
+                        new RandomEventProcessor(eventProcessors),
+                        smartHome.getAlarm()),
                 new GettingNextSensorEventImplementation()
         );
         eventLoop.createEvent();

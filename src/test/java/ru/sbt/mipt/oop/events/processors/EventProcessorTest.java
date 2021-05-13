@@ -6,7 +6,6 @@ import ru.sbt.mipt.oop.Light;
 import ru.sbt.mipt.oop.Room;
 import ru.sbt.mipt.oop.SmartHome;
 import ru.sbt.mipt.oop.events.SensorEvent;
-import ru.sbt.mipt.oop.events.SensorEventType;
 
 import java.util.Arrays;
 

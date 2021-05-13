@@ -1,6 +1,6 @@
 package ru.sbt.mipt.oop.events.processors;
 
-import ru.sbt.mipt.oop.events.SensorEvent;
+import ru.sbt.mipt.oop.events.Event;
 import java.util.List;
 
 
@@ -12,7 +12,7 @@ public class RandomEventProcessor implements EventProcessor {
     }
 
     @Override
-    public void processEvent(SensorEvent event){
+    public void processEvent(Event event){
         for (EventProcessor processor: processors) {
             processor.processEvent(event);
         }

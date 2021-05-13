@@ -2,13 +2,13 @@ package ru.sbt.mipt.oop.events;
 
 import ru.sbt.mipt.oop.events.SensorEvent;
 import ru.sbt.mipt.oop.events.*;
-import ru.sbt.mipt.oop.events.processors.RandomEventProcessor;
+import ru.sbt.mipt.oop.events.processors.*;
 
 public class EventCreation {
-    private final RandomEventProcessor eventProcessor;
+    private final EventProcessor eventProcessor;
     private final GettingNextSensorEvent eventNext;
 
-    public EventCreation(RandomEventProcessor eventProcessor, GettingNextSensorEvent eventNext) {
+    public EventCreation(EventProcessor eventProcessor, GettingNextSensorEvent eventNext) {
         this.eventProcessor = eventProcessor;
         this.eventNext = eventNext;
     }
@@ -17,7 +17,8 @@ public class EventCreation {
         SensorEvent event = eventNext.getNextEvent();
         while (event != null) {
             System.out.println("Got event: " + event);
-            eventProcessor.processEvent(event);
+            Event event1 = (Event) event;
+            eventProcessor.processEvent(event1);
             event = eventNext.getNextEvent();
         }
     }

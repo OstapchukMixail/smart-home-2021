@@ -3,8 +3,8 @@ package ru.sbt.mipt.oop.events.processors;
 import ru.sbt.mipt.oop.SmartHome;
 import ru.sbt.mipt.oop.events.SensorEvent;
 import ru.sbt.mipt.oop.Light;
-import ru.sbt.mipt.oop.events.helplibraries.LoopForProcessors;
-import ru.sbt.mipt.oop.events.SensorEventType;
+import ru.sbt.mipt.oop.events.Event;
+import ru.sbt.mipt.oop.events.EventType;
 
 public class LightEventProcessor implements EventProcessor{
     private final SmartHome smartHome;
@@ -14,25 +14,26 @@ public class LightEventProcessor implements EventProcessor{
     }
 
     @Override
-    public void processEvent(SensorEvent event) {
+    public void processEvent(Event event) {
         if (!isEventValid(event.getType())) return;
 
+        SensorEvent sensorEvent = (SensorEvent) event;
         smartHome.execute(component -> {
             if (component instanceof Light) {
                 Light light = (Light) component;
-                if (light.getId().equals(event.getObjectId())) {
+                if (light.getId().equals(sensorEvent.getObjectId())) {
                     updateState(light, getState(event));
                 }
             }
         });
     }
 
-    private boolean isEventValid(SensorEventType type) {
-        return type == SensorEventType.LIGHT_OFF || type == SensorEventType.LIGHT_ON;
+    private boolean isEventValid(EventType type) {
+        return type == EventType.LIGHT_OFF || type == EventType.LIGHT_ON;
     }
 
-    private boolean getState(SensorEvent event){
-        final boolean isOn = event.getType() == SensorEventType.LIGHT_ON;
+    private boolean getState(Event event){
+        final boolean isOn = event.getType() == EventType.LIGHT_ON;
         return isOn;
     }
 
