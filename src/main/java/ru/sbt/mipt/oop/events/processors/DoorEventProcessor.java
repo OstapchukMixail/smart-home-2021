@@ -17,10 +17,14 @@ public class DoorEventProcessor implements EventProcessor {
     public void processEvent(SensorEvent event) {
         if (!isEventValid(event.getType())) return;
 
-        Door currentDoor = (new LoopForProcessors(smartHome)).searchDoor(event.getObjectId());
-        if (currentDoor != null) {
-            updateState(currentDoor, getState(event));
-        }
+        smartHome.execute(component -> {
+            if (component instanceof Door) {
+                Door door = (Door) component;
+                if (door.getId().equals(event.getObjectId())) {
+                    updateState(door, getState(event));
+                }
+            }
+        });
     }
 
     private boolean isEventValid(SensorEventType type) {

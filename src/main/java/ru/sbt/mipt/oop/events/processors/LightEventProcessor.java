@@ -17,10 +17,14 @@ public class LightEventProcessor implements EventProcessor{
     public void processEvent(SensorEvent event) {
         if (!isEventValid(event.getType())) return;
 
-        Light currentLight = (new LoopForProcessors(smartHome)).searchLight(event.getObjectId());
-        if (currentLight != null) {
-            updateState(currentLight, getState(event));
-        }
+        smartHome.execute(component -> {
+            if (component instanceof Light) {
+                Light light = (Light) component;
+                if (light.getId().equals(event.getObjectId())) {
+                    updateState(light, getState(event));
+                }
+            }
+        });
     }
 
     private boolean isEventValid(SensorEventType type) {

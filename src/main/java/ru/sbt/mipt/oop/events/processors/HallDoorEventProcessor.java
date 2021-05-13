@@ -23,15 +23,17 @@ public class HallDoorEventProcessor implements EventProcessor{
     @Override
     public void processEvent(SensorEvent event) {
         if (!isEventValid(event)) return;
-        
-        for (Room room: smartHome.getRooms()) {
-            for (Light light: room.getLights()) {
-                SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, light.getId());
-                CommandSender sender = new CommandSenderImplementation();;
-                sender.sendCommand(command);
+
+        smartHome.execute((homeComponent -> {
+            if (homeComponent instanceof Room) {
+                Room room = (Room) homeComponent;
+                if (!room.getName().equals("hall")) {
+                    return;
+                }
+
+                ifHallDoor(event.getObjectId());
             }
-        }
-        turnOffAllLight();
+        }));
     }
 
     private boolean isEventValid(SensorEvent event) {
@@ -39,23 +41,32 @@ public class HallDoorEventProcessor implements EventProcessor{
     }
 
 
-    private boolean isHallDoor(String id) {
-        for (Room room : smartHome.getRooms()) {
-            for (Door door : room.getDoors()) {
-                if (door.getId().equals(id) && room.getName().equals("hall")) {
-                    return true;
+    private void ifHallDoor(String id) {
+        smartHome.execute((component -> {
+            if (component instanceof Door) {
+                Door door = (Door) component;
+                if (door.getId().equals(id)) {
+                    turnOffAllLight();
+                    smartHome.execute((componentL -> {
+                        if (componentL instanceof Light) {
+                            Light light = (Light) componentL;
+                            SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, light.getId());
+                            CommandSender sender = new CommandSenderImplementation();
+                            sender.sendCommand(command);
+                        }
+                    }));
                 }
             }
-        }
-        return false;
+        }));
     }
 
     private void turnOffAllLight() {
-        for (Room homeRoom : smartHome.getRooms()) {
-            for (Light light : homeRoom.getLights()) {
+        smartHome.execute((innComponent -> {
+            if (innComponent instanceof Light) {
+                Light light = (Light) innComponent;
                 light.setOn(false);
+                System.out.println(light.getId() + " was turned off.");
             }
-        }
-        System.out.println("All light is turned off.");
+        }));
     }
 }
