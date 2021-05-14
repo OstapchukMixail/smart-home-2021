@@ -8,10 +8,9 @@ import ru.sbt.mipt.oop.signaling.Alarm;
 import ru.sbt.mipt.oop.events.EventType;
 import ru.sbt.mipt.oop.remote.controllers.RemoteControlRegistry;
 import ru.sbt.mipt.oop.remote.controllers.commands.*;
-import ru.sbt.mipt.oop.SmartHome;
 import ru.sbt.mipt.oop.events.processors.HallDoorEventProcessor;
 import ru.sbt.mipt.oop.events.processors.LightEventProcessor;
-import ru.sbt.mipt.oop.homereader.SmartHomeReaderImplementation;
+import ru.sbt.mipt.oop.homereader.JsonSmartHomeReaderImplementation;
 import ru.sbt.mipt.oop.remote.controllers.RemoteControl;
 import ru.sbt.mipt.oop.remote.controllers.RemoteControlImpl;
 import ru.sbt.mipt.oop.events.processors.DoorEventProcessor;
@@ -25,7 +24,7 @@ public class ApplicationConfig {
 
     @Bean
     SmartHome smartHome() {
-        return (new SmartHomeReaderImplementation("smart-home-1.js")).read();
+        return (new JsonSmartHomeReaderImplementation("smart-home-1.js")).read();
     }
 
     @Bean

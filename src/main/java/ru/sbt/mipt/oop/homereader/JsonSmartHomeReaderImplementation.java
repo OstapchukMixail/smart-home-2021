@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class SmartHomeReaderImplementation implements SmartHomeReader {
+public class JsonSmartHomeReaderImplementation implements JsonSmartHomeReader {
     private final String filename;
 
-    public SmartHomeReaderImplementation(String filename) {
+    public JsonSmartHomeReaderImplementation(String filename) {
         this.filename = filename;
     }
 

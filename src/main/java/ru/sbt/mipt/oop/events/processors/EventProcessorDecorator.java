@@ -1,15 +1,18 @@
 package ru.sbt.mipt.oop.events.processors;
 
-import ru.sbt.mipt.oop.AlertMessenger;
+
+import ru.sbt.mipt.oop.action.Action;
 import ru.sbt.mipt.oop.signaling.Alarm;
 import ru.sbt.mipt.oop.signaling.AlarmReactor;
+import ru.sbt.mipt.oop.action.AlarmToAlertAction;
 import ru.sbt.mipt.oop.events.Event;
-import ru.sbt.mipt.oop.events.SensorEvent;
+import ru.sbt.mipt.oop.events.AlarmEvent;
 
 public class EventProcessorDecorator implements EventProcessor, AlarmReactor {
     private EventProcessor processor;
     private Alarm alarm;
     private Event event;
+    private final String message = "Attention";
 
     public EventProcessorDecorator(EventProcessor processor, Alarm alarm) {
         this.processor = processor;
@@ -18,9 +21,10 @@ public class EventProcessorDecorator implements EventProcessor, AlarmReactor {
 
     @Override
     public void onAlarmActiveState() {
-        if (event instanceof SensorEvent) {
-            alarm.turnToAlert();
-            (new AlertMessenger()).send();
+        if (event instanceof AlarmEvent) {
+            Action component = new AlarmToAlertAction();
+            component.run(event);
+            System.out.println(message);
         } else {
             processor.processEvent(event);
         }
@@ -33,7 +37,7 @@ public class EventProcessorDecorator implements EventProcessor, AlarmReactor {
 
     @Override
     public void onAlarmAlertState() {
-        (new AlertMessenger()).send();
+        System.out.println(message);
     }
 
     @Override
