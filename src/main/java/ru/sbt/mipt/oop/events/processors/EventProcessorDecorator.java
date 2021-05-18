@@ -7,6 +7,9 @@ import ru.sbt.mipt.oop.signaling.AlarmReactor;
 import ru.sbt.mipt.oop.action.AlarmToAlertAction;
 import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.AlarmEvent;
+import ru.sbt.mipt.oop.NotifierImplementation;
+import ru.sbt.mipt.oop.Notifier;
+
 
 public class EventProcessorDecorator implements EventProcessor, AlarmReactor {
     private EventProcessor processor;
@@ -24,7 +27,8 @@ public class EventProcessorDecorator implements EventProcessor, AlarmReactor {
         if (event instanceof AlarmEvent) {
             Action component = new AlarmToAlertAction();
             component.run(event);
-            System.out.println(message);
+            Notifier send_message = new NotifierImplementation();
+            send_message.send(message);
         } else {
             processor.processEvent(event);
         }

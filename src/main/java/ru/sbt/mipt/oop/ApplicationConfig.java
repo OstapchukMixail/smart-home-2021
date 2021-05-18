@@ -4,17 +4,14 @@ import ru.sbt.mipt.oop.adapter.EventHandlerAdapter;
 import com.coolcompany.smarthome.events.SensorEventsManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.sbt.mipt.oop.events.processors.*;
 import ru.sbt.mipt.oop.signaling.Alarm;
 import ru.sbt.mipt.oop.events.EventType;
 import ru.sbt.mipt.oop.remote.controllers.RemoteControlRegistry;
 import ru.sbt.mipt.oop.remote.controllers.commands.*;
-import ru.sbt.mipt.oop.events.processors.HallDoorEventProcessor;
-import ru.sbt.mipt.oop.events.processors.LightEventProcessor;
-import ru.sbt.mipt.oop.homereader.JsonSmartHomeReaderImplementation;
+import ru.sbt.mipt.oop.homereader.JsonSmartHomeReader;
 import ru.sbt.mipt.oop.remote.controllers.RemoteControl;
 import ru.sbt.mipt.oop.remote.controllers.RemoteControlImpl;
-import ru.sbt.mipt.oop.events.processors.DoorEventProcessor;
-import ru.sbt.mipt.oop.events.processors.EventProcessor;
 
 import java.util.List;
 import java.util.Map;
@@ -24,22 +21,22 @@ public class ApplicationConfig {
 
     @Bean
     SmartHome smartHome() {
-        return (new JsonSmartHomeReaderImplementation("smart-home-1.js")).read();
+        return (new JsonSmartHomeReader("smart-home-1.js")).read();
     }
 
     @Bean
     EventProcessor lightEventProcessor() {
-        return new LightEventProcessor(smartHome());
+        return new EventProcessorDecorator(new LightEventProcessor(smartHome()), smartHome().getAlarm());
     }
 
     @Bean
     EventProcessor getDoorEventProcessor() {
-        return new DoorEventProcessor(smartHome());
+        return new EventProcessorDecorator(new DoorEventProcessor(smartHome()), smartHome().getAlarm());
     }
 
     @Bean
     EventProcessor getHallDoorEventProcessor() {
-        return new HallDoorEventProcessor(smartHome());
+        return new EventProcessorDecorator(new HallDoorEventProcessor(smartHome()), smartHome().getAlarm());
     }
 
     @Bean
